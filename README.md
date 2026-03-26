@@ -100,7 +100,9 @@ src/
 
 ## 许可证
 
-本项目用于教育和文化保护目的。
+本项目采用 [MIT 许可证](./LICENSE)。
+
+Copyright (c) 2026 Mark Chen
 
 ## 致谢
 
