@@ -4,7 +4,7 @@ import { dialectCategories } from '@/data/dialectCategories';
 
 export default function Legend() {
   return (
-    <details className="absolute bottom-7 left-4 z-[1000] hidden sm:block bg-white rounded-xl shadow-xl p-3">
+    <details className="absolute bottom-7 left-4 z-[1000] hidden lg:block bg-white rounded-xl shadow-xl p-3">
       <summary className="cursor-pointer font-semibold text-gray-800 text-sm">方言分类图例</summary>
       <div className="mt-3 space-y-2">
         {dialectCategories.map((category) => (

@@ -18,7 +18,7 @@ export default function SearchFilter({ filteredDialects, searchQuery, selectedCa
   selectedDialect, onSearchChange, onCategoryChange, onDialectSelect, onReset }: SearchFilterProps) {
   const category = dialectCategories.find((item) => item.id === selectedCategory);
   return (
-    <section aria-label="搜索与浏览方言" className="absolute top-3 left-3 z-[1000] w-[calc(100%_-_6rem)] max-w-80 sm:top-4 sm:left-4">
+    <section aria-label="搜索与浏览方言" className="absolute top-3 left-3 z-[1000] w-[calc(100%_-_6rem)] max-w-80 max-h-[calc(100dvh-4rem)] overflow-y-auto sm:top-4 sm:left-4">
       <div className="rounded-xl bg-white p-4 shadow-xl">
         <h1 className="text-xl font-bold text-gray-800">中国方言地图</h1>
         <p className="mb-3 text-xs text-gray-500">Chinese Dialect Map · 探索地方语言</p>
@@ -26,25 +26,27 @@ export default function SearchFilter({ filteredDialects, searchQuery, selectedCa
         <input id="dialect-search" type="search" placeholder="名称、地区、语言特点…" value={searchQuery}
           onChange={(event) => onSearchChange(event.target.value)}
           className="mb-3 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-        <div aria-label="按方言类别筛选" className="flex flex-wrap gap-1.5">
-          <button type="button" aria-pressed={!selectedCategory} onClick={() => onCategoryChange('')}
-            className={`rounded-full px-2 py-1 text-xs ${!selectedCategory ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-700'}`}>全部</button>
-          {dialectCategories.map((item) => (
-            <button type="button" key={item.id} aria-pressed={selectedCategory === item.id}
-              onClick={() => onCategoryChange(item.id)}
-              className={`rounded-full border px-2 py-1 text-xs text-gray-800 ${selectedCategory === item.id ? 'border-gray-700 font-bold' : 'border-transparent'}`}
-              style={{ backgroundColor: `${item.color}${selectedCategory === item.id ? '90' : '30'}` }}>
-              {item.name.split('方')[0]}
-            </button>
-          ))}
-        </div>
-        {category && <p className="mt-2 text-xs leading-relaxed text-gray-600">{category.description}</p>}
-        <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
-          <p role="status" aria-live="polite">找到 {filteredDialects.length} 个代表地点</p>
-          {(searchQuery || selectedCategory) && <button type="button" onClick={onReset} className="text-blue-700">清除筛选</button>}
+        <div className={selectedDialect ? 'hidden lg:block' : ''}>
+          <div aria-label="按方言类别筛选" className="flex flex-wrap gap-1.5">
+            <button type="button" aria-pressed={!selectedCategory} onClick={() => onCategoryChange('')}
+              className={`rounded-full px-2 py-1 text-xs ${!selectedCategory ? 'bg-gray-800 text-white' : 'bg-gray-100 text-gray-700'}`}>全部</button>
+            {dialectCategories.map((item) => (
+              <button type="button" key={item.id} aria-pressed={selectedCategory === item.id}
+                onClick={() => onCategoryChange(item.id)}
+                className={`rounded-full border px-2 py-1 text-xs text-gray-800 ${selectedCategory === item.id ? 'border-gray-700 font-bold' : 'border-transparent'}`}
+                style={{ backgroundColor: `${item.color}${selectedCategory === item.id ? '90' : '30'}` }}>
+                {item.name.split('方')[0]}
+              </button>
+            ))}
+          </div>
+          {category && <p className="mt-2 text-xs leading-relaxed text-gray-600">{category.description}</p>}
+          <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+            <p role="status" aria-live="polite">找到 {filteredDialects.length} 个代表地点</p>
+            {(searchQuery || selectedCategory) && <button type="button" onClick={onReset} className="text-blue-700">清除筛选</button>}
+          </div>
         </div>
       </div>
-      <div className={`mt-2 max-h-[30dvh] overflow-y-auto rounded-xl bg-white p-2 shadow-xl sm:max-h-[calc(100dvh-24rem)] ${selectedDialect ? 'hidden sm:block' : ''}`}>
+      <div className={`mt-2 max-h-[30dvh] overflow-y-auto rounded-xl bg-white p-2 shadow-xl lg:max-h-[calc(100dvh-24rem)] ${selectedDialect ? 'hidden lg:block' : ''}`}>
         {filteredDialects.length === 0 ? (
           <div className="p-3 text-center text-sm text-gray-600">
             <p>没有找到匹配的方言</p>

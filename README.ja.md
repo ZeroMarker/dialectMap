@@ -116,3 +116,5 @@ Copyright (c) 2026 Mark Chen
 変更の検証には `npm run lint`、`npm test`、`npm run build`、`npm run typecheck` を使用します。GitHub Actions でも main への push と pull request で実行します。
 
 マーカーは代表地点であり、方言の分布境界ではありません。既存の話者数には統計年・出典・統一された集計範囲がないため、人口比較には利用できません。発音例は文字表示のみです。システムフォントを使用するためビルド時の Google Fonts ダウンロードは不要ですが、地図タイルには OpenStreetMap への接続が必要です。
+
+ブラウザーの回帰テストは `npx playwright install chromium` の後に `npm run test:e2e` で実行できます（キーボードフォーカス、画面サイズ別レイアウト、地図タイルの読み込み失敗と再試行）。

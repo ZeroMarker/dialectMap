@@ -116,3 +116,5 @@ Browse all representative locations without entering a search. Search names, reg
 Run `npm run lint`, `npm test`, `npm run build` and `npm run typecheck` to validate changes. GitHub Actions runs these checks on pushes to main and pull requests.
 
 Markers identify representative locations, not dialect boundaries. Existing speaker estimates lack dated sources and consistent scope and should not be used for population comparisons. Pronunciation examples are text only. System fonts allow builds without downloading Google Fonts; map tiles still require OpenStreetMap access.
+
+Browser regression tests: `npx playwright install chromium`, then `npm run test:e2e` (keyboard focus, responsive layout, tile failures and retry).

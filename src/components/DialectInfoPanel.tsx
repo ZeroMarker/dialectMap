@@ -29,7 +29,7 @@ export default function DialectInfoPanel({ dialect, onClose }: DialectInfoPanelP
   const category = dialectCategories.find((c) => c.id === dialect.category);
 
   return (
-    <section aria-labelledby="dialect-title" className="absolute bottom-7 left-3 right-3 max-h-[45dvh] bg-white rounded-xl shadow-2xl overflow-hidden z-[1001] animate-fade-in sm:bottom-auto sm:left-auto sm:top-4 sm:right-16 sm:w-96 sm:max-h-[80dvh] flex flex-col">
+    <section aria-labelledby="dialect-title" className="absolute bottom-7 left-3 right-3 max-h-[45dvh] bg-white rounded-xl shadow-2xl overflow-hidden z-[1001] animate-fade-in lg:bottom-auto lg:left-auto lg:top-4 lg:right-16 lg:w-96 lg:max-h-[80dvh] flex flex-col">
       <div
         className="p-4 text-gray-900 shrink-0"
         style={{ backgroundColor: category ? `${category.color}60` : '#e5e7eb' }}

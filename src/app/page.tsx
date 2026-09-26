@@ -41,7 +41,7 @@ export default function Home() {
         地图复位
       </button>
       <DialectInfoPanel dialect={selectedDialect} onClose={handleClose} />
-      <div className="absolute bottom-7 right-4 z-[999] hidden rounded-lg bg-white/90 px-3 py-2 text-xs text-gray-600 sm:block">
+      <div className="absolute bottom-7 right-4 z-[999] hidden rounded-lg bg-white/90 px-3 py-2 text-xs text-gray-600 lg:block">
         <p>{dialects.length} 个代表地点 · {new Date().getFullYear()}</p>
         <p>标记为代表地点，不表示方言分布边界</p>
       </div>
