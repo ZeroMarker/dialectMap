@@ -6,8 +6,8 @@
 
 中国の方言を地図上で可視化するインタラクティブな Web アプリケーションです。
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
-![React](https://img.shields.io/badge/React-18-blue?logo=react)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![React](https://img.shields.io/badge/React-19-blue?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?logo=tailwindcss)
 
@@ -37,7 +37,7 @@
 
 ## 技術スタック
 
-- **フレームワーク**: [Next.js 14](https://nextjs.org/) (App Router)
+- **フレームワーク**: [Next.js 16](https://nextjs.org/) (App Router)
 - **言語**: [TypeScript](https://www.typescriptlang.org/)
 - **スタイリング**: [Tailwind CSS](https://tailwindcss.com/)
 - **マッピング**: [Leaflet](https://leafletjs.com/)
@@ -46,7 +46,7 @@
 
 ### 前提条件
 
-- Node.js 18+
+- Node.js 20.9+
 - npm または yarn
 
 ### インストール
@@ -57,7 +57,7 @@ git clone <repository-url>
 cd dialectMap
 
 # 依存関係をインストール
-npm install
+npm ci
 
 # 開発サーバーを起動
 npm run dev
@@ -108,3 +108,11 @@ Copyright (c) 2026 Mark Chen
 
 - 地図データ © [OpenStreetMap](https://www.openstreetmap.org/) 貢献者
 - [Leaflet](https://leafletjs.com/) 地図ライブラリを使用
+
+## 閲覧と検証
+
+検索しなくても代表地点の一覧を閲覧できます。名前・地域・言語的特徴を検索でき、空白で複数のキーワードを組み合わせられます。分類による絞り込み、件数表示、検索結果なしの案内、絞り込み解除、地図のリセット、Esc キーによる詳細表示の終了に対応しています。
+
+変更の検証には `npm run lint`、`npm test`、`npm run build`、`npm run typecheck` を使用します。GitHub Actions でも main への push と pull request で実行します。
+
+マーカーは代表地点であり、方言の分布境界ではありません。既存の話者数には統計年・出典・統一された集計範囲がないため、人口比較には利用できません。発音例は文字表示のみです。システムフォントを使用するためビルド時の Google Fonts ダウンロードは不要ですが、地図タイルには OpenStreetMap への接続が必要です。

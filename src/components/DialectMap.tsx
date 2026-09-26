@@ -1,110 +1,88 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-import type L from 'leaflet';
-import { Dialect } from '@/types/dialect';
+import { useEffect, useRef, useState } from 'react';
+import type * as Leaflet from 'leaflet';
+import type { Dialect } from '@/types/dialect';
 import { dialectCategories } from '@/data/dialectCategories';
 
 interface DialectMapProps {
   dialects: Dialect[];
   selectedDialect: Dialect | null;
   onDialectSelect: (dialect: Dialect) => void;
+  resetView: number;
 }
 
-export default function DialectMap({
-  dialects,
-  selectedDialect,
-  onDialectSelect,
-}: DialectMapProps) {
-  const mapRef = useRef<L.Map | null>(null);
-  const markersRef = useRef<L.Marker[]>([]);
+const initialCenter: [number, number] = [35.8617, 104.1954];
+
+export default function DialectMap({ dialects, selectedDialect, onDialectSelect, resetView }: DialectMapProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<Leaflet.Map | null>(null);
+  const leafletRef = useRef<typeof Leaflet | null>(null);
+  const [ready, setReady] = useState(false);
+  const [failed, setFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    const initMap = async () => {
-      const L = await import('leaflet');
-
-      if (!mapRef.current) {
-        mapRef.current = L.map('map').setView([35.8617, 104.1954], 4);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-          attribution:
-            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-          maxZoom: 18,
-        }).addTo(mapRef.current);
-      }
-
-      return L;
-    };
-
-    initMap().then((L) => {
-      (window as any).L = L;
-    });
-
+    let disposed = false;
+    import('leaflet').then((L) => {
+      if (disposed || !containerRef.current) return;
+      leafletRef.current = L;
+      const map = L.map(containerRef.current, { zoomControl: false }).setView(initialCenter, 4);
+      mapRef.current = map;
+      L.control.zoom({ position: 'topright' }).addTo(map);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 18,
+      }).addTo(map);
+      setReady(true);
+    }).catch(() => { if (!disposed) setFailed(true); });
     return () => {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
+      disposed = true;
+      mapRef.current?.remove();
+      mapRef.current = null;
+      leafletRef.current = null;
     };
-  }, []);
+  }, [attempt]);
 
   useEffect(() => {
-    const loadMarkers = async () => {
-      const L = await import('leaflet');
-
-      if (!mapRef.current) return;
-
-      markersRef.current.forEach((marker) => marker.remove());
-      markersRef.current = [];
-
-      dialects.forEach((dialect) => {
-        const category = dialectCategories.find((c) => c.id === dialect.category);
-        const color = category?.color || '#666';
-
-        const icon = L.divIcon({
-          className: 'custom-marker',
-          html: `
-          <div style="
-            width: 24px;
-            height: 24px;
-            background-color: ${color};
-            border: 3px solid white;
-            border-radius: 50%;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-            cursor: pointer;
-            transition: transform 0.2s;
-          "></div>
-        `,
-          iconSize: [24, 24],
-          iconAnchor: [12, 12],
-        });
-
-        const marker = L.marker(dialect.coordinates, { icon })
-          .addTo(mapRef.current!)
-          .bindTooltip(dialect.name, {
-            direction: 'top',
-            offset: [0, -10],
-          })
-          .on('click', () => onDialectSelect(dialect));
-
-        markersRef.current.push(marker);
+    const L = leafletRef.current;
+    const map = mapRef.current;
+    if (!ready || !L || !map) return;
+    const markers = L.layerGroup().addTo(map);
+    dialects.forEach((dialect) => {
+      const color = dialectCategories.find((c) => c.id === dialect.category)?.color || '#666';
+      const selected = selectedDialect?.id === dialect.id;
+      const icon = L.divIcon({
+        className: 'custom-marker',
+        html: `<span class="dialect-marker${selected ? ' is-selected' : ''}" style="background-color:${color}"></span>`,
+        iconSize: [24, 24], iconAnchor: [12, 12],
       });
-    };
-
-    loadMarkers();
-  }, [dialects, onDialectSelect]);
+      const label = document.createElement('span');
+      label.textContent = dialect.name;
+      L.marker(dialect.coordinates, { icon, title: dialect.name, alt: dialect.name, riseOnHover: true,
+        zIndexOffset: selected ? 1000 : 0 })
+        .addTo(markers).bindTooltip(label, { direction: 'top', offset: [0, -10] })
+        .on('click', () => onDialectSelect(dialect));
+    });
+    return () => { markers.remove(); };
+  }, [ready, dialects, selectedDialect, onDialectSelect]);
 
   useEffect(() => {
-    const flyToLocation = async () => {
-      if (!selectedDialect || !mapRef.current) return;
-      const L = await import('leaflet');
-      mapRef.current.flyTo(selectedDialect.coordinates, 6, {
-        duration: 1.5,
-      });
-    };
+    if (!ready || !selectedDialect) return;
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    mapRef.current?.flyTo(selectedDialect.coordinates, 6, { animate: !reducedMotion, duration: 0.8 });
+  }, [ready, selectedDialect]);
 
-    flyToLocation();
-  }, [selectedDialect]);
+  useEffect(() => {
+    if (ready) mapRef.current?.setView(initialCenter, 4);
+  }, [ready, resetView]);
 
-  return <div id="map" className="w-full h-full" />;
+  return (
+    <>
+      <div ref={containerRef} className="w-full h-full" aria-label="中国方言代表地点地图" />
+      {!ready && <div role="status" className="absolute inset-0 flex items-center justify-center bg-slate-100">
+        {failed ? <button onClick={() => { setFailed(false); setAttempt((value) => value + 1); }}>地图加载失败，点击重试</button> : '正在加载地图…'}
+      </div>}
+    </>
+  );
 }

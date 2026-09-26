@@ -6,8 +6,8 @@
 
 An interactive web application that visualizes Chinese dialects on a map, showcasing the rich linguistic diversity across China.
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
-![React](https://img.shields.io/badge/React-18-blue?logo=react)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![React](https://img.shields.io/badge/React-19-blue?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?logo=tailwindcss)
 
@@ -37,7 +37,7 @@ The app covers 9 major Chinese dialect categories:
 
 ## Tech Stack
 
-- **Framework**: [Next.js 14](https://nextjs.org/) (App Router)
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/)
 - **Mapping**: [Leaflet](https://leafletjs.com/)
@@ -46,7 +46,7 @@ The app covers 9 major Chinese dialect categories:
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 20.9+
 - npm or yarn
 
 ### Installation
@@ -57,7 +57,7 @@ git clone <repository-url>
 cd dialectMap
 
 # Install dependencies
-npm install
+npm ci
 
 # Start development server
 npm run dev
@@ -108,3 +108,11 @@ Copyright (c) 2026 Mark Chen
 
 - Map data © [OpenStreetMap](https://www.openstreetmap.org/) contributors
 - Built with [Leaflet](https://leafletjs.com/) mapping library
+
+## Exploration and validation
+
+Browse all representative locations without entering a search. Search names, regions or language features; separate multiple terms with spaces. Category filters, result counts, empty states, clearing filters, map reset and Escape to close details are supported. Mobile details appear below the search controls.
+
+Run `npm run lint`, `npm test`, `npm run build` and `npm run typecheck` to validate changes. GitHub Actions runs these checks on pushes to main and pull requests.
+
+Markers identify representative locations, not dialect boundaries. Existing speaker estimates lack dated sources and consistent scope and should not be used for population comparisons. Pronunciation examples are text only. System fonts allow builds without downloading Google Fonts; map tiles still require OpenStreetMap access.

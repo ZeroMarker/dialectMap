@@ -4,9 +4,9 @@ import { dialectCategories } from '@/data/dialectCategories';
 
 export default function Legend() {
   return (
-    <div className="absolute bottom-4 left-4 z-[1000] bg-white rounded-xl shadow-2xl p-4">
-      <h3 className="font-semibold text-gray-800 mb-3 text-sm">方言分类</h3>
-      <div className="space-y-2">
+    <details className="absolute bottom-7 left-4 z-[1000] hidden sm:block bg-white rounded-xl shadow-xl p-3">
+      <summary className="cursor-pointer font-semibold text-gray-800 text-sm">方言分类图例</summary>
+      <div className="mt-3 space-y-2">
         {dialectCategories.map((category) => (
           <div key={category.id} className="flex items-center gap-2">
             <span
@@ -20,6 +20,6 @@ export default function Legend() {
           </div>
         ))}
       </div>
-    </div>
+    </details>
   );
 }

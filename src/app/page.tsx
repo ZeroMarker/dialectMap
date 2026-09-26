@@ -1,66 +1,49 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import DialectMap from '@/components/DialectMap';
 import DialectInfoPanel from '@/components/DialectInfoPanel';
 import SearchFilter from '@/components/SearchFilter';
 import Legend from '@/components/Legend';
 import { dialects } from '@/data/dialects';
-import { Dialect } from '@/types/dialect';
+import type { Dialect } from '@/types/dialect';
+import { filterDialects } from '@/lib/filterDialects';
 
 export default function Home() {
   const [selectedDialect, setSelectedDialect] = useState<Dialect | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
-
-  const filteredDialects = useMemo(() => {
-    return dialects.filter((dialect) => {
-      const matchesSearch =
-        dialect.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        dialect.nameEn.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        dialect.regions.some((r) => r.includes(searchQuery));
-
-      const matchesCategory =
-        !selectedCategory || dialect.category === selectedCategory;
-
-      return matchesSearch && matchesCategory;
-    });
-  }, [searchQuery, selectedCategory]);
-
-  const handleDialectSelect = (dialect: Dialect) => {
-    setSelectedDialect(dialect);
+  const [resetView, setResetView] = useState(0);
+  const filteredDialects = useMemo(
+    () => filterDialects(dialects, searchQuery, selectedCategory),
+    [searchQuery, selectedCategory]
+  );
+  const handleDialectSelect = useCallback((dialect: Dialect) => setSelectedDialect(dialect), []);
+  const handleClose = useCallback(() => setSelectedDialect(null), []);
+  const resetFilters = () => {
+    setSearchQuery('');
+    setSelectedCategory('');
+    setSelectedDialect(null);
   };
 
   return (
-    <main className="relative w-full h-screen overflow-hidden">
-      <DialectMap
-        dialects={selectedCategory || searchQuery ? filteredDialects : dialects}
-        selectedDialect={selectedDialect}
-        onDialectSelect={handleDialectSelect}
-      />
-
-      <SearchFilter
-        dialects={dialects}
-        filteredDialects={filteredDialects}
-        searchQuery={searchQuery}
-        selectedCategory={selectedCategory}
-        onSearchChange={setSearchQuery}
-        onCategoryChange={setSelectedCategory}
-        onDialectSelect={handleDialectSelect}
-      />
-
+    <main className="relative w-full h-[100dvh] overflow-hidden">
+      <DialectMap dialects={filteredDialects} selectedDialect={selectedDialect}
+        onDialectSelect={handleDialectSelect} resetView={resetView} />
+      <SearchFilter filteredDialects={filteredDialects} searchQuery={searchQuery}
+        selectedCategory={selectedCategory} selectedDialect={selectedDialect}
+        onSearchChange={(query) => { setSearchQuery(query); setSelectedDialect(null); }}
+        onCategoryChange={(category) => { setSelectedCategory(category); setSelectedDialect(null); }}
+        onDialectSelect={handleDialectSelect} onReset={resetFilters} />
       <Legend />
-
-      <DialectInfoPanel
-        dialect={selectedDialect}
-        onClose={() => setSelectedDialect(null)}
-      />
-
-      <div className="absolute bottom-4 right-4 z-[1000] text-xs text-gray-500 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-lg">
-        <p>中国方言地图 · Chinese Dialect Map</p>
-        <p className="text-gray-400">
-          {dialects.length} dialects · {new Date().getFullYear()}
-        </p>
+      <button type="button" className="absolute right-3 top-24 z-[1000] rounded-lg bg-white px-2 py-2 text-xs shadow-lg sm:right-4 sm:px-3 sm:text-sm"
+        onClick={() => { setSelectedDialect(null); setResetView((value) => value + 1); }}>
+        地图复位
+      </button>
+      <DialectInfoPanel dialect={selectedDialect} onClose={handleClose} />
+      <div className="absolute bottom-7 right-4 z-[999] hidden rounded-lg bg-white/90 px-3 py-2 text-xs text-gray-600 sm:block">
+        <p>{dialects.length} 个代表地点 · {new Date().getFullYear()}</p>
+        <p>标记为代表地点，不表示方言分布边界</p>
       </div>
     </main>
   );

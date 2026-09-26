@@ -6,15 +6,17 @@
 
 一个交互式 Web 应用，在地图上展示中国各地方言，呈现丰富的语言多样性。
 
-![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)
-![React](https://img.shields.io/badge/React-18-blue?logo=react)
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![React](https://img.shields.io/badge/React-19-blue?logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind-3-38bdf8?logo=tailwindcss)
 
 ## 功能特点
 
 - 🗺️ **交互式地图** - 基于 OpenStreetMap 的交互式方言地图
-- 🔍 **搜索与筛选** - 按方言名称、英文名或地区搜索；按方言类别筛选
+- 🔍 **搜索与筛选** - 按方言名称、英文名、地区或语言特点搜索，支持空格分隔的多关键词；按方言类别筛选
+- 📋 **方言浏览** - 完整地点列表、实时结果计数、空结果提示和一键清除筛选
+- ⌨️ **便捷操作** - 地图复位、选中标记高亮、Esc 关闭详情和移动端详情面板
 - 📍 **可视化标记** - 不同颜色的标记代表不同的方言类别
 - 📊 **方言信息** - 详细信息包括描述、使用人数、分布地区、发音示例
 - 🎨 **响应式设计** - 使用 Tailwind CSS 构建的美观界面
@@ -37,7 +39,7 @@
 
 ## 技术栈
 
-- **框架**: [Next.js 14](https://nextjs.org/) (App Router)
+- **框架**: [Next.js 16](https://nextjs.org/) (App Router)
 - **语言**: [TypeScript](https://www.typescriptlang.org/)
 - **样式**: [Tailwind CSS](https://tailwindcss.com/)
 - **地图**: [Leaflet](https://leafletjs.com/)
@@ -46,7 +48,7 @@
 
 ### 环境要求
 
-- Node.js 18+
+- Node.js 20.9+
 - npm 或 yarn
 
 ### 安装
@@ -57,7 +59,7 @@ git clone <repository-url>
 cd dialectMap
 
 # 安装依赖
-npm install
+npm ci
 
 # 启动开发服务器
 npm run dev
@@ -93,6 +95,16 @@ src/
 | `npm run build` | 构建生产版本 |
 | `npm start` | 启动生产服务器 |
 | `npm run lint` | 运行代码检查 |
+| `npm run typecheck` | TypeScript 类型检查 |
+| `npm test` | 搜索筛选和数据结构测试 |
+
+GitHub Actions 会在 `main` 推送和 pull request 中自动执行上述检查。
+
+## 数据说明
+
+地图标记仅表示代表地点，不表示方言的地理分布边界。现有使用人数缺少统计年份、来源和统一口径，部分条目可能描述整个方言群体，不能直接用于人口比较；发音示例仅为文字展示，不提供语音播放。新增资料应核实分类、地点、统计口径与转写方式，并记录来源。
+
+构建使用系统字体，不依赖 Google Fonts 下载；地图底图仍需访问 OpenStreetMap。
 
 ## 添加新方言
 
