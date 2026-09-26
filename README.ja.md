@@ -118,3 +118,7 @@ Copyright (c) 2026 Mark Chen
 マーカーは代表地点であり、方言の分布境界ではありません。既存の話者数には統計年・出典・統一された集計範囲がないため、人口比較には利用できません。発音例は文字表示のみです。システムフォントを使用するためビルド時の Google Fonts ダウンロードは不要ですが、地図タイルには OpenStreetMap への接続が必要です。
 
 ブラウザーの回帰テストは `npx playwright install chromium` の後に `npm run test:e2e` で実行できます（キーボードフォーカス、画面サイズ別レイアウト、地図タイルの読み込み失敗と再試行）。
+
+## GitHub Pages
+
+[公開サイト](https://zeromarker.github.io/dialectMap/)。`main` への push 時に `Deploy GitHub Pages` ワークフローが静的サイトを出力して公開します。Pages の公開元は **GitHub Actions** に設定してください。ローカルでの静的ビルド：`GITHUB_PAGES=true PAGES_BASE_PATH=/dialectMap npm run build`（出力先：`out/`）。

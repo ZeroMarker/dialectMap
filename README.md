@@ -101,6 +101,18 @@ src/
 
 GitHub Actions 会在 `main` 推送和 pull request 中自动执行上述检查。
 
+## GitHub Pages
+
+在线访问：[中国方言地图](https://zeromarker.github.io/dialectMap/)。推送到 `main` 后，`Deploy GitHub Pages` 工作流会检查并导出静态站点，自动发布到 Pages。仓库的 Pages 发布来源应设为 **GitHub Actions**。
+
+本地检查静态导出：
+
+```bash
+GITHUB_PAGES=true PAGES_BASE_PATH=/dialectMap npm run build
+```
+
+生成文件位于 `out/`，部署时使用 `/dialectMap` 路径。普通 `npm run dev`、`npm run build` 和 `npm start` 仍使用本地根路径。
+
 ## 数据说明
 
 地图标记仅表示代表地点，不表示方言的地理分布边界。现有使用人数缺少统计年份、来源和统一口径，部分条目可能描述整个方言群体，不能直接用于人口比较；发音示例仅为文字展示，不提供语音播放。新增资料应核实分类、地点、统计口径与转写方式，并记录来源。

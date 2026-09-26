@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 test('map marker retains its identity and keyboard focus through selection', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
-  await page.goto('/');
+  await page.goto('./');
   const marker = page.locator('.leaflet-marker-icon[title="北京话"]');
   await expect(marker).toBeVisible();
   await marker.evaluate((element) => element.setAttribute('data-original', 'true'));
@@ -30,7 +30,7 @@ test('map marker retains its identity and keyboard focus through selection', asy
 for (const viewport of [{ width: 320, height: 568 }, { width: 768, height: 1024 }, { width: 844, height: 390 }, { width: 1024, height: 768 }]) {
   test(`search and details do not overlap at ${viewport.width}×${viewport.height}`, async ({ page }) => {
     await page.setViewportSize(viewport);
-    await page.goto('/');
+    await page.goto('./');
     const search = page.getByRole('region', { name: '搜索与浏览方言' });
     await search.getByRole('button', { name: /北京话/ }).click();
     const details = page.getByRole('region', { name: '北京话', exact: true });
@@ -48,7 +48,7 @@ for (const viewport of [{ width: 320, height: 568 }, { width: 768, height: 1024 
 test('tile failure allows browsing and retrying without losing markers', async ({ page }) => {
   await page.unroute(tileUrl);
   await page.route(tileUrl, (route) => route.abort());
-  await page.goto('/');
+  await page.goto('./');
   await expect(page.getByText('底图暂时无法加载，仍可通过列表查看方言。')).toBeVisible();
   await expect(page.locator('.leaflet-marker-icon')).toHaveCount(12);
   await page.getByRole('region', { name: '搜索与浏览方言' }).getByRole('button', { name: /北京话/ }).click();

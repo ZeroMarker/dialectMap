@@ -118,3 +118,7 @@ Run `npm run lint`, `npm test`, `npm run build` and `npm run typecheck` to valid
 Markers identify representative locations, not dialect boundaries. Existing speaker estimates lack dated sources and consistent scope and should not be used for population comparisons. Pronunciation examples are text only. System fonts allow builds without downloading Google Fonts; map tiles still require OpenStreetMap access.
 
 Browser regression tests: `npx playwright install chromium`, then `npm run test:e2e` (keyboard focus, responsive layout, tile failures and retry).
+
+## GitHub Pages
+
+[Live site](https://zeromarker.github.io/dialectMap/). The `Deploy GitHub Pages` workflow exports and publishes the site on pushes to `main`. Set the Pages publishing source to **GitHub Actions**. Local static build: `GITHUB_PAGES=true PAGES_BASE_PATH=/dialectMap npm run build` (output: `out/`).
