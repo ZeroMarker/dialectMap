@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 import type { Dialect } from '@/types/dialect';
-import { dialectCategories } from '@/data/dialectCategories';
+import { getCategoryById } from '@/lib/categories';
+import CloseIcon from './icons/CloseIcon';
 
 interface DialectInfoPanelProps {
   dialect: Dialect | null;
@@ -26,7 +27,7 @@ export default function DialectInfoPanel({ dialect, onClose }: DialectInfoPanelP
   }, [dialect, onClose]);
   if (!dialect) return null;
 
-  const category = dialectCategories.find((c) => c.id === dialect.category);
+  const category = getCategoryById(dialect.category);
 
   return (
     <section aria-labelledby="dialect-title" className="absolute bottom-7 left-3 right-3 max-h-[45dvh] bg-white rounded-xl shadow-2xl overflow-hidden z-[1001] animate-fade-in lg:bottom-auto lg:left-auto lg:top-4 lg:right-16 lg:w-96 lg:max-h-[80dvh] flex flex-col">
@@ -46,19 +47,7 @@ export default function DialectInfoPanel({ dialect, onClose }: DialectInfoPanelP
             onClick={onClose}
             className="text-gray-800 hover:text-black transition-colors p-1"
           >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
+            <CloseIcon className="w-6 h-6" />
           </button>
         </div>
         <div className="mt-2 text-sm opacity-80">{category?.name}</div>

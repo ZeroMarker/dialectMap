@@ -2,6 +2,7 @@
 
 import type { Dialect } from '@/types/dialect';
 import { dialectCategories } from '@/data/dialectCategories';
+import { getCategoryByStringId, getCategoryById, getCategoryShortName } from '@/lib/categories';
 
 interface SearchFilterProps {
   filteredDialects: Dialect[];
@@ -16,7 +17,7 @@ interface SearchFilterProps {
 
 export default function SearchFilter({ filteredDialects, searchQuery, selectedCategory,
   selectedDialect, onSearchChange, onCategoryChange, onDialectSelect, onReset }: SearchFilterProps) {
-  const category = dialectCategories.find((item) => item.id === selectedCategory);
+  const category = selectedCategory ? getCategoryByStringId(selectedCategory) : undefined;
   return (
     <section aria-label="搜索与浏览方言" className="absolute top-3 left-3 z-[1000] w-[calc(100%_-_6rem)] max-w-80 max-h-[calc(100dvh-4rem)] overflow-y-auto sm:top-4 sm:left-4">
       <div className="rounded-xl bg-white p-4 shadow-xl">
@@ -35,7 +36,7 @@ export default function SearchFilter({ filteredDialects, searchQuery, selectedCa
                 onClick={() => onCategoryChange(item.id)}
                 className={`rounded-full border px-2 py-1 text-xs text-gray-800 ${selectedCategory === item.id ? 'border-gray-700 font-bold' : 'border-transparent'}`}
                 style={{ backgroundColor: `${item.color}${selectedCategory === item.id ? '90' : '30'}` }}>
-                {item.name.split('方')[0]}
+                {getCategoryShortName(item.id)}
               </button>
             ))}
           </div>
@@ -54,7 +55,7 @@ export default function SearchFilter({ filteredDialects, searchQuery, selectedCa
             <button type="button" onClick={onReset} className="mt-3 text-blue-700">显示全部方言</button>
           </div>
         ) : filteredDialects.map((dialect) => {
-          const item = dialectCategories.find((c) => c.id === dialect.category);
+          const item = getCategoryById(dialect.category);
           return (
             <button type="button" key={dialect.id} onClick={() => onDialectSelect(dialect)}
               aria-pressed={selectedDialect?.id === dialect.id}
@@ -62,7 +63,7 @@ export default function SearchFilter({ filteredDialects, searchQuery, selectedCa
               <span aria-hidden="true" className="h-3 w-3 flex-shrink-0 rounded-full" style={{ backgroundColor: item?.color }} />
               <span className="min-w-0 flex-1"><span className="block text-sm text-gray-800">{dialect.name}</span>
                 <span className="block truncate text-xs text-gray-500">{dialect.regions.join('、')}</span></span>
-              <span className="text-xs text-gray-600">{item?.name.split('方')[0]}</span>
+              <span className="text-xs text-gray-600">{item ? getCategoryShortName(item.id) : ''}</span>
             </button>
           );
         })}

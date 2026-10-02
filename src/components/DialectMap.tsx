@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import type * as Leaflet from 'leaflet';
 import type { Dialect } from '@/types/dialect';
-import { dialectCategories } from '@/data/dialectCategories';
+import { getCategoryColor } from '@/lib/categories';
 
 interface DialectMapProps {
   dialects: Dialect[];
@@ -53,36 +53,56 @@ export default function DialectMap({ dialects, selectedDialect, onDialectSelect,
     };
   }, [attempt]);
 
+  const dialectMap = useMemo(() => {
+    const map = new Map<string, Dialect>();
+    dialects.forEach((dialect) => map.set(dialect.id, dialect));
+    return map;
+  }, [dialects]);
+
+  const markerData = useMemo(() => {
+    return dialects.map((dialect) => ({
+      id: dialect.id,
+      name: dialect.name,
+      coordinates: dialect.coordinates,
+      color: getCategoryColor(dialect.category),
+    }));
+  }, [dialects]);
+
   useEffect(() => {
     const L = leafletRef.current;
     const map = mapRef.current;
     if (!ready || !L || !map) return;
     const markers = L.layerGroup().addTo(map);
     const markerIndex = markersRef.current;
-    dialects.forEach((dialect) => {
-      const color = dialectCategories.find((c) => c.id === dialect.category)?.color || '#666';
+    markerData.forEach((data) => {
       const icon = L.divIcon({
         className: 'custom-marker',
-        html: `<span class="dialect-marker" style="background-color:${color}"></span>`,
+        html: `<span class="dialect-marker" style="background-color:${data.color}"></span>`,
         iconSize: [24, 24], iconAnchor: [12, 12],
       });
       const label = document.createElement('span');
-      label.textContent = dialect.name;
-      const marker = L.marker(dialect.coordinates, { icon, title: dialect.name, alt: dialect.name, riseOnHover: true,
+      label.textContent = data.name;
+      const marker = L.marker(data.coordinates, { icon, title: data.name, alt: data.name, riseOnHover: true,
         zIndexOffset: 0 })
         .addTo(markers).bindTooltip(label, { direction: 'top', offset: [0, -10] })
-        .on('click', () => onDialectSelect(dialect));
-      markerIndex.set(dialect.id, marker);
+        .on('click', () => {
+          const dialect = dialectMap.get(data.id);
+          if (dialect) onDialectSelect(dialect);
+        });
+      markerIndex.set(data.id, marker);
       marker.getElement()?.addEventListener('keydown', (event) => {
         if (event.key === ' ' || event.key === 'Enter') {
           event.preventDefault();
           event.stopPropagation();
-          if (!event.repeat) onDialectSelect(dialect);
+          if (!event.repeat) {
+            const dialect = dialectMap.get(data.id);
+            if (dialect) onDialectSelect(dialect);
+          }
         }
       });
     });
     return () => { markers.remove(); markerIndex.clear(); };
-  }, [ready, dialects, onDialectSelect]);
+  }, [ready, markerData, dialectMap, onDialectSelect]);
 
   useEffect(() => {
     markersRef.current.forEach((marker, id) => {

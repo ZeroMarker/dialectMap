@@ -20,11 +20,23 @@ export default function Home() {
   );
   const handleDialectSelect = useCallback((dialect: Dialect) => setSelectedDialect(dialect), []);
   const handleClose = useCallback(() => setSelectedDialect(null), []);
-  const resetFilters = () => {
+  const handleSearchChange = useCallback((query: string) => {
+    setSearchQuery(query);
+    setSelectedDialect(null);
+  }, []);
+  const handleCategoryChange = useCallback((category: string) => {
+    setSelectedCategory(category);
+    setSelectedDialect(null);
+  }, []);
+  const handleReset = useCallback(() => {
     setSearchQuery('');
     setSelectedCategory('');
     setSelectedDialect(null);
-  };
+  }, []);
+  const handleMapReset = useCallback(() => {
+    setSelectedDialect(null);
+    setResetView((value) => value + 1);
+  }, []);
 
   return (
     <main className="relative w-full h-[100dvh] overflow-hidden">
@@ -32,12 +44,12 @@ export default function Home() {
         onDialectSelect={handleDialectSelect} resetView={resetView} />
       <SearchFilter filteredDialects={filteredDialects} searchQuery={searchQuery}
         selectedCategory={selectedCategory} selectedDialect={selectedDialect}
-        onSearchChange={(query) => { setSearchQuery(query); setSelectedDialect(null); }}
-        onCategoryChange={(category) => { setSelectedCategory(category); setSelectedDialect(null); }}
-        onDialectSelect={handleDialectSelect} onReset={resetFilters} />
+        onSearchChange={handleSearchChange}
+        onCategoryChange={handleCategoryChange}
+        onDialectSelect={handleDialectSelect} onReset={handleReset} />
       <Legend />
       <button type="button" className="absolute right-3 top-24 z-[1000] rounded-lg bg-white px-2 py-2 text-xs shadow-lg sm:right-4 sm:px-3 sm:text-sm"
-        onClick={() => { setSelectedDialect(null); setResetView((value) => value + 1); }}>
+        onClick={handleMapReset}>
         地图复位
       </button>
       <DialectInfoPanel dialect={selectedDialect} onClose={handleClose} />
